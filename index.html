@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bansi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            overflow-x: hidden;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #555;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .subtitle {
+            color: #777;
+            font-size: 1rem;
+        }
+        .flute-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            flex-grow: 1;
+            margin-bottom: 40px;
+        }
+        .flute-body {
+            width: 80%;
+            max-width: 600px;
+            height: 40px;
+            background: linear-gradient(90deg, #d4a76a, #c19660, #d4a76a);
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 
+                0 10px 20px rgba(0,0,0,0.2),
+                inset 0 -3px 6px rgba(0,0,0,0.2),
+                inset 0 3px 6px rgba(255,255,255,0.3);
+            margin-bottom: 40px;
+        }
+        .flute-hole {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle at 30% 30%, #333, #000);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 
+                0 2px 4px rgba(0,0,0,0.3),
+                inset 0 1px 2px rgba(255,255,255,0.1);
+            transition: all 0.2s ease;
+        }
+        .flute-hole:active {
+            transform: scale(0.9);
+        }
+        .flute-hole.active {
+            background: radial-gradient(circle at 30% 30%, #666, #333);
+            box-shadow: 
+                0 1px 2px rgba(0,0,0,0.3),
+                inset 0 1px 2px rgba(255,255,255,0.2);
+        }
+        .hole-1 { left: 10%; top: 50%; transform: translateY(-50%); }
+        .hole-2 { left: 20%; top: 50%; transform: translateY(-50%); }
+        .hole-3 { left: 30%; top: 50%; transform: translateY(-50%); }
+        .hole-4 { left: 40%; top: 50%; transform: translateY(-50%); }
+        .hole-5 { left: 50%; top: 50%; transform: translateY(-50%); }
+        .hole-6 { left: 60%; top: 50%; transform: translateY(-50%); }
+        .hole-7 { left: 70%; top: 50%; transform: translateY(-50%); }
+        .hole-8 { left: 80%; top: 50%; transform: translateY(-50%); }
+        .note-labels {
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+            max-width: 600px;
+            margin-top: 10px;
+        }
+        .note-label {
+            font-size: 0.8rem;
+            color: #777;
+            text-align: center;
+            width: 20px;
+        }
+        .sound-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            background: rgba(255,255,255,0.7);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .sound-btn {
+            padding: 12px 20px;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border: 1px solid #e0e0e0;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #555;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+        .sound-btn:hover {
+            background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+        }
+        .sound-btn:active {
+            transform: scale(0.95);
+        }
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+        }
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .flute-body {
+                height: 35px;
+            }
+            
+            .flute-hole {
+                width: 18px;
+                height: 18px;
+            }
+            
+            .note-label {
+                font-size: 0.7rem;
+                width: 18px;
+            }
+            
+            .sound-btn {
+                padding: 10px 15px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Bansi</h1>
+        <p class="subtitle">Tap on the holes or use the buttons below</p>
+    </div>
+    <div class="flute-container">
+        <div class="flute-body">
+            <div class="flute-hole hole-1" data-note="C" data-freq="261.63"></div>
+            <div class="flute-hole hole-2" data-note="D" data-freq="293.66"></div>
+            <div class="flute-hole hole-3" data-note="E" data-freq="329.63"></div>
+            <div class="flute-hole hole-4" data-note="F" data-freq="349.23"></div>
+            <div class="flute-hole hole-5" data-note="G" data-freq="392.00"></div>
+            <div class="flute-hole hole-6" data-note="A" data-freq="440.00"></div>
+            <div class="flute-hole hole-7" data-note="B" data-freq="493.88"></div>
+            <div class="flute-hole hole-8" data-note="C2" data-freq="523.25"></div>
+        </div>
+        
+        <div class="note-labels">
+            <div class="note-label">C</div>
+            <div class="note-label">D</div>
+            <div class="note-label">E</div>
+            <div class="note-label">F</div>
+            <div class="note-label">G</div>
+            <div class="note-label">A</div>
+            <div class="note-label">B</div>
+            <div class="note-label">C</div>
+        </div>
+        <div class="sound-controls">
+            <button class="sound-btn" data-note="C" data-freq="261.63">C Note</button>
+            <button class="sound-btn" data-note="D" data-freq="293.66">D Note</button>
+            <button class="sound-btn" data-note="E" data-freq="329.63">E Note</button>
+            <button class="sound-btn" data-note="F" data-freq="349.23">F Note</button>
+            <button class="sound-btn" data-note="G" data-freq="392.00">G Note</button>
+            <button class="sound-btn" data-note="A" data-freq="440.00">A Note</button>
+            <button class="sound-btn" data-note="B" data-freq="493.88">B Note</button>
+            <button class="sound-btn" data-note="C2" data-freq="523.25">High C</button>
+        </div>
+    </div>
+    <div class="footer">
+        Made with ❤️ by Sauravhhh
+    </div>
+    <script>
+        // Initialize Audio Context
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        // Function to create a flute sound
+        function playFluteSound(frequency, duration = 0.5) {
+            const now = audioContext.currentTime;
+            
+            // Main oscillator for the flute tone
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+            
+            // Noise for breathy quality
+            const noiseBuffer = audioContext.createBuffer(1, audioContext.sampleRate * 0.1, audioContext.sampleRate);
+            const noiseData = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < noiseData.length; i++) {
+                noiseData[i] = Math.random() * 2 - 1;
+            }
+            const noiseSource = audioContext.createBufferSource();
+            const noiseGain = audioContext.createGain();
+            const noiseFilter = audioContext.createBiquadFilter();
+            
+            // Connect main oscillator
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(frequency, now);
+            oscillator.connect(filter);
+            filter.connect(gainNode);
+            
+            // Set filter for main tone
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(frequency * 2, now);
+            filter.Q.setValueAtTime(10, now);
+            
+            // Connect noise
+            noiseSource.buffer = noiseBuffer;
+            noiseSource.loop = true;
+            noiseSource.connect(noiseFilter);
+            noiseFilter.connect(noiseGain);
+            noiseGain.connect(gainNode);
+            
+            // Set noise filter and gain
+            noiseFilter.type = 'bandpass';
+            noiseFilter.frequency.setValueAtTime(frequency * 1.5, now);
+            noiseFilter.Q.setValueAtTime(5, now);
+            noiseGain.gain.setValueAtTime(0.05, now);
+            
+            // Set gain envelope for flute-like attack and release
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.3, now + 0.05);
+            gainNode.gain.exponentialRampToValueAtTime(0.1, now + duration * 0.3);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration);
+            
+            // Start and stop
+            oscillator.start(now);
+            oscillator.stop(now + duration);
+            noiseSource.start(now);
+            noiseSource.stop(now + duration);
+            
+            gainNode.connect(audioContext.destination);
+        }
+        // Function to create ripple effect
+        function createRipple(event, element) {
+            const circle = document.createElement("span");
+            const diameter = Math.max(element.clientWidth, element.clientHeight);
+            const radius = diameter / 2;
+            
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - element.offsetLeft - radius}px`;
+            circle.style.top = `${event.clientY - element.offsetTop - radius}px`;
+            circle.classList.add("ripple");
+            
+            const ripple = element.getElementsByClassName("ripple")[0];
+            if (ripple) {
+                ripple.remove();
+            }
+            
+            element.appendChild(circle);
+        }
+        // Add event listeners to flute holes
+        document.querySelectorAll('.flute-hole').forEach(hole => {
+            hole.addEventListener('click', function(e) {
+                const freq = parseFloat(this.getAttribute('data-freq'));
+                playFluteSound(freq);
+                createRipple(e, this);
+                
+                // Visual feedback
+                this.classList.add('active');
+                setTimeout(() => {
+                    this.classList.remove('active');
+                }, 200);
+            });
+        });
+        // Add event listeners to sound buttons
+        document.querySelectorAll('.sound-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const freq = parseFloat(this.getAttribute('data-freq'));
+                playFluteSound(freq);
+            });
+        });
+        // Add keyboard support (numbers 1-8 for the notes)
+        document.addEventListener('keydown', function(e) {
+            const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C2'];
+            const freqs = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
+            const keyMap = {
+                '1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5, '7': 6, '8': 7
+            };
+            
+            if (keyMap.hasOwnProperty(e.key)) {
+                const index = keyMap[e.key];
+                playFluteSound(freqs[index]);
+                
+                // Visual feedback on corresponding hole
+                const hole = document.querySelector(`.hole-${index + 1}`);
+                if (hole) {
+                    hole.classList.add('active');
+                    setTimeout(() => {
+                        hole.classList.remove('active');
+                    }, 200);
+                }
+            }
+        });
+        // Initialize audio context on first user interaction
+        document.addEventListener('click', function initAudio() {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            document.removeEventListener('click', initAudio);
+        }, { once: true });
+    </script>
+</body>
+  </html>
